@@ -39,8 +39,8 @@ A premium, responsive adventure travel platform focused on Ethiopian hiking, tre
 ### 1️. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/ethiotrek.git
-cd ethiotrek
+git https://github.com/tsionawitworkneh/FUTURE_FS_03
+cd FUTURE_FS_03
 ```
 
 ### 2️. Install dependencies
