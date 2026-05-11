@@ -1,0 +1,162 @@
+.hero {
+  min-height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: background-image 1s ease-in-out;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  color: white;
+  padding: 100px 20px;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+
+@media (min-width: 1600px) {
+  .hero {
+    background-size: 100% auto;
+    background-size: cover;
+  }
+}
+
+.hero-container {
+  z-index: 2;
+  width: 100%;
+}
+
+.hero-badge {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 1.5rem;
+  background: rgba(25, 181, 188, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+.hero-content h1 {
+  font-size: clamp(2.5rem, 8vw, 4.8rem);
+  margin: 15px 0;
+  line-height: 1.1;
+  font-weight: 700;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.hero-content h1 span {
+  color: var(--teal);
+}
+
+.hero-description {
+  max-width: 650px;
+  margin: 0 auto 35px;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: #fff;
+  line-height: 1.6;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+.hero-btns {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-main {
+  background: var(--teal);
+  color: white;
+  padding: 16px 35px;
+  border: none;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.btn-main:hover {
+  background: white;
+  color: var(--dark);
+  transform: scale(1.05);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 16px 35px;
+  border: 2px solid white;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: 0.3s;
+}
+
+.btn-outline:hover {
+  background: white;
+  color: var(--dark);
+}
+
+.wave-divider {
+  position: absolute;
+  bottom: -2px;
+  width: 100%;
+  height: clamp(60px, 15vw, 160px);
+  z-index: 1;
+}
+
+
+.animate-pop {
+  animation: pop 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.2s ease-in forwards;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
