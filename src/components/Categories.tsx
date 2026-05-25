@@ -11,17 +11,19 @@ const categories = [
 
 const Categories: React.FC = () => {
   return (
-    <section className="container text-center section-padding">
-      <p className="accent-text">Who we are</p>
-      <h2 className="section-title">Adventure Ideas</h2>
+    <section className="container section-padding">
+      <div className="text-center mb-12">
+        <span className="accent-text">Who we are</span>
+        <h2 className="section-title">Adventure Ideas</h2>
+      </div>
       <div className="category-grid">
         {categories.map(cat => (
           <div key={cat.id} className="cat-item">
             <Link to={cat.slug ? `/tour/${cat.slug}` : '#'} className="block group">
-              <div className="cat-circle overflow-hidden group-hover:scale-105 transition-transform duration-300">
-                <img src={cat.img} alt={cat.title} className="w-full h-full object-cover" />
+              <div className="cat-circle">
+                <img src={cat.img} alt={cat.title} />
               </div>
-              <h3 className="group-hover:text-primary transition-colors">{cat.title}</h3>
+              <h3>{cat.title}</h3>
               <p>Explore the best hiking trails in the heart of Ethiopia.</p>
             </Link>
           </div>

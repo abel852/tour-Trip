@@ -6,7 +6,7 @@ export interface ItineraryItem {
   title: string;
   description: string;
   accommodation?: string;
-  meals: string[]; // e.g., ['Breakfast', 'Lunch', 'Dinner']
+  meals: string[];
   distance?: string;
   elevationGain?: string;
 }
@@ -25,32 +25,63 @@ export interface Tour {
   longDescription?: string;
   heroImage: string;
   galleryImages: string[];
-  
-  // Adventure Meta Stats
   distanceKm: number;
   maxElevationM: number;
   durationDays: number;
   maxGroupSize: number;
   difficulty: DifficultyLevel;
-  
-  // Pricing
   basePrice: number;
   currency: string;
-  
-  // Content
+  highlights?: string[];
   itinerary: ItineraryItem[];
   inclusions: string[];
   exclusions: string[];
   packingList: PackingItem[];
-  
-  // Safety & Prerequisites
   fitnessLevel: string;
   medicalWarnings?: string[];
   acclimatizationNotes?: string;
-  
-  // Booking related
   availableDates: Date[];
   bookedDates: Date[];
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+  certifications?: string[];
+  languages?: string[];
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  location: string;
+  image: string;
+  rating: number;
+  tourName: string;
+  review: string;
+  date: string;
+}
+
+export interface BlogPost {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  author: string;
+  date: string;
+  category: string;
+  readTime: string;
+}
+
+export interface FAQ {
+  id: string;
+  category: string;
+  question: string;
+  answer: string;
 }
 
 export interface Booking {

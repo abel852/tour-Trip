@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaCalendarAlt, FaUserFriends, FaEnvelope, FaPhone, FaExclamationTriangle } from 'react-icons/fa';
+import { FaTimes, FaCalendarAlt, FaUserFriends, FaEnvelope, FaPhone, FaExclamationTriangle, FaCheck } from 'react-icons/fa';
 import { Tour } from '../types/tour';
 
 interface BookingModalProps {
@@ -12,7 +12,7 @@ interface BookingModalProps {
 const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    startDate: tour.availableDates[0].toISOString().split('T')[0],
+    startDate: tour.availableDates[0]?.toISOString().split('T')[0] || '',
     adults: 1,
     children: 0,
     fullName: '',
@@ -30,10 +30,14 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
     if (step < 2) {
       setStep(step + 1);
     } else {
-      // Final submission logic here
-      alert('Booking request sent! Our team will contact you shortly.');
+      window.location.href = '/booking-confirmed';
       onClose();
     }
+  };
+
+  const handleClose = () => {
+    setStep(1);
+    onClose();
   };
 
   return (
@@ -44,7 +48,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute inset-0 bg-secondary/80 backdrop-blur-sm"
           />
           
@@ -52,45 +56,50 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl"
+            className="relative bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
           >
             <button 
-              onClick={onClose}
-              className="absolute top-6 right-6 text-gray-400 hover:text-secondary transition-colors z-10"
+              onClick={handleClose}
+              className="absolute top-4 right-4 text-gray-400 hover:text-secondary transition-colors z-10 bg-white rounded-full p-2 shadow"
             >
-              <FaTimes size={24} />
+              <FaTimes size={20} />
             </button>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 h-full">
+            <div className="grid grid-cols-1 md:grid-cols-5">
               {/* Sidebar */}
-              <div className="md:col-span-2 bg-gray-50 p-8">
+              <div className="md:col-span-2 bg-secondary p-8">
                 <div className="mb-8">
                   <p className="text-primary font-bold text-xs uppercase tracking-widest mb-2">Booking for</p>
-                  <h3 className="text-xl font-bold text-secondary">{tour.title}</h3>
+                  <h3 className="text-xl font-bold text-white">{tour.title}</h3>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
+                <div className="space-y-4 text-white/80">
+                  <div className="flex items-center gap-3 text-sm">
                     <FaCalendarAlt className="text-primary" />
                     <span>{new Date(formData.startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-600">
+                  <div className="flex items-center gap-3 text-sm">
                     <FaUserFriends className="text-primary" />
-                    <span>{formData.adults} Adults, {formData.children} Children</span>
+                    <span>{formData.adults} Adults{formData.children > 0 ? `, ${formData.children} Children` : ''}</span>
                   </div>
                 </div>
 
-                <div className="mt-12 pt-8 border-t border-gray-200">
-                  <p className="text-gray-400 text-xs uppercase font-bold mb-1">Total Price</p>
-                  <p className="text-3xl font-bold text-secondary">${totalPrice.toLocaleString()}</p>
+                <div className="mt-12 pt-8 border-t border-white/20">
+                  <p className="text-gray-400 text-xs uppercase font-bold mb-1">Estimated Total</p>
+                  <p className="text-3xl font-bold text-white">${totalPrice.toLocaleString()}</p>
+                </div>
+
+                <div className="mt-6 space-y-2 text-xs text-gray-400">
+                  <p className="flex items-center gap-2"><FaCheck className="text-primary" /> Free cancellation up to 30 days</p>
+                  <p className="flex items-center gap-2"><FaCheck className="text-primary" /> No payment required today</p>
                 </div>
               </div>
 
               {/* Form Content */}
               <div className="md:col-span-3 p-8">
                 <div className="flex gap-2 mb-8">
-                  <div className={`h-1 flex-grow rounded-full ${step >= 1 ? 'bg-primary' : 'bg-gray-200'}`} />
-                  <div className={`h-1 flex-grow rounded-full ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`} />
+                  <div className={`h-2 flex-grow rounded-full transition-colors ${step >= 1 ? 'bg-primary' : 'bg-gray-200'}`} />
+                  <div className={`h-2 flex-grow rounded-full transition-colors ${step >= 2 ? 'bg-primary' : 'bg-gray-200'}`} />
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -100,18 +109,18 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
                       animate={{ opacity: 1, x: 0 }}
                       className="space-y-4"
                     >
-                      <h2 className="text-2xl font-bold text-secondary mb-6">Trip Details</h2>
+                      <h2 className="text-2xl font-bold text-secondary">Trip Details</h2>
                       
                       <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-2">Select Date</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Select Departure Date</label>
                         <select 
                           className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
                           value={formData.startDate}
                           onChange={(e) => setFormData({...formData, startDate: e.target.value})}
                         >
-                          {tour.availableDates.map(date => (
-                            <option key={date.toISOString()} value={date.toISOString().split('T')[0]}>
-                              {date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                          {tour.availableDates.map((date, i) => (
+                            <option key={i} value={date.toISOString().split('T')[0]}>
+                              {new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })}
                             </option>
                           ))}
                         </select>
@@ -119,26 +128,35 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-sm font-bold text-gray-700 mb-2">Adults</label>
+                          <label className="block text-sm font-bold text-gray-700 mb-2">Adults (18+)</label>
                           <input 
                             type="number" 
                             min="1"
                             max={tour.maxGroupSize}
-                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
+                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-center font-bold"
                             value={formData.adults}
-                            onChange={(e) => setFormData({...formData, adults: parseInt(e.target.value)})}
+                            onChange={(e) => setFormData({...formData, adults: parseInt(e.target.value) || 1})}
                           />
+                          <p className="text-xs text-gray-500 mt-1 text-center">${tour.basePrice} each</p>
                         </div>
                         <div>
                           <label className="block text-sm font-bold text-gray-700 mb-2">Children</label>
                           <input 
                             type="number" 
                             min="0"
-                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
+                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none text-center font-bold"
                             value={formData.children}
-                            onChange={(e) => setFormData({...formData, children: parseInt(e.target.value)})}
+                            onChange={(e) => setFormData({...formData, children: parseInt(e.target.value) || 0})}
                           />
+                          <p className="text-xs text-gray-500 mt-1 text-center">${tour.basePrice * 0.7} each</p>
                         </div>
+                      </div>
+
+                      <div className="bg-amber-50 rounded-xl p-4 flex gap-3">
+                        <FaExclamationTriangle className="text-amber-500 mt-1 flex-shrink-0" />
+                        <p className="text-xs text-amber-800 leading-relaxed">
+                          Group size limited to {tour.maxGroupSize} people per departure. {tour.maxGroupSize - formData.adults - formData.children} spots remaining.
+                        </p>
                       </div>
                     </motion.div>
                   )}
@@ -149,48 +167,78 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
                       animate={{ opacity: 1, x: 0 }}
                       className="space-y-4"
                     >
-                      <h2 className="text-2xl font-bold text-secondary mb-6">Contact Info</h2>
+                      <h2 className="text-2xl font-bold text-secondary">Your Information</h2>
                       
-                      <div className="relative">
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Full Name *</label>
                         <input 
                           type="text" 
-                          placeholder="Full Name"
+                          placeholder="As shown on passport"
                           required
                           className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
                           value={formData.fullName}
                           onChange={(e) => setFormData({...formData, fullName: e.target.value})}
                         />
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-2">Email *</label>
+                          <input 
+                            type="email" 
+                            placeholder="your@email.com"
+                            required
+                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
+                            value={formData.email}
+                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-bold text-gray-700 mb-2">Phone *</label>
+                          <input 
+                            type="tel" 
+                            placeholder="+1 234 567 890"
+                            required
+                            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Emergency Contact *</label>
                         <input 
-                          type="email" 
-                          placeholder="Email"
+                          type="text" 
+                          placeholder="Name and phone number"
                           required
                           className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
-                          value={formData.email}
-                          onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        />
-                        <input 
-                          type="tel" 
-                          placeholder="Phone"
-                          required
-                          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
-                          value={formData.phone}
-                          onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                          value={formData.emergencyContact}
+                          onChange={(e) => setFormData({...formData, emergencyContact: e.target.value})}
                         />
                       </div>
 
-                      <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex gap-3">
-                        <FaExclamationTriangle className="text-amber-500 mt-1 flex-shrink-0" />
-                        <p className="text-xs text-amber-800 leading-relaxed">
-                          By continuing, you confirm that all participants meet the fitness requirements for this trek.
+                      <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Dietary Restrictions</label>
+                        <input 
+                          type="text" 
+                          placeholder="Vegetarian, vegan, allergies, etc."
+                          className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none"
+                          value={formData.dietaryRestrictions}
+                          onChange={(e) => setFormData({...formData, dietaryRestrictions: e.target.value})}
+                        />
+                      </div>
+
+                      <div className="p-4 bg-primary/10 rounded-xl border border-primary/20 flex gap-3">
+                        <FaExclamationTriangle className="text-primary mt-1 flex-shrink-0" />
+                        <p className="text-xs text-gray-700 leading-relaxed">
+                          By confirming, you agree to our terms and confirm that all participants meet the fitness requirements: {tour.fitnessLevel}
                         </p>
                       </div>
                     </motion.div>
                   )}
 
-                  <div className="pt-6 flex gap-3">
+                  <div className="pt-4 flex gap-3">
                     {step > 1 && (
                       <button 
                         type="button"
@@ -202,9 +250,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ tour, isOpen, onClose }) =>
                     )}
                     <button 
                       type="submit"
-                      className="flex-grow py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
+                      className="flex-1 py-3 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all"
                     >
-                      {step === 2 ? 'Confirm Booking' : 'Next Step'}
+                      {step === 2 ? 'Confirm Booking' : 'Continue'}
                     </button>
                   </div>
                 </form>
