@@ -1,0 +1,96 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Difficulty {
+  EASY
+  MODERATE
+  STRENUOUS
+  TECHNICAL
+}
+
+model Tour {
+  id                String   @id @default(cuid())
+  slug              String   @unique
+  title             String
+  description       String
+  longDescription   String?
+  heroImage         String
+  galleryImages     String[]
+  
+  // Adventure Meta Stats
+  distanceKm        Float
+  maxElevationM     Int
+  durationDays      Int
+  maxGroupSize      Int
+  difficulty        Difficulty
+  
+  // Pricing
+  basePrice         Decimal
+  currency          String   @default("USD")
+  
+  // Relations
+  itinerary         ItineraryItem[]
+  inclusions        String[]
+  exclusions        String[]
+  packingList       PackingItem[]
+  
+  // Safety & Prerequisites
+  fitnessLevel      String
+  medicalWarnings   String[]
+  acclimatization   String?
+  
+  // Booking related
+  bookings          Booking[]
+  availableDates    DateTime[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ItineraryItem {
+  id             String @id @default(cuid())
+  day            Int
+  title          String
+  description    String
+  accommodation  String?
+  meals          String[]
+  distance       String?
+  elevationGain  String?
+  tour           Tour   @relation(fields: [tourId], references: [id])
+  tourId         String
+}
+
+model PackingItem {
+  id        String @id @default(cuid())
+  name      String
+  category  String // Required Gear, Recommended Clothing, etc.
+  included  Boolean @default(false)
+  tour      Tour   @relation(fields: [tourId], references: [id])
+  tourId    String
+}
+
+model Booking {
+  id                String   @id @default(cuid())
+  tour              Tour     @relation(fields: [tourId], references: [id])
+  tourId            String
+  startDate         DateTime
+  adults            Int
+  children          Int
+  totalPrice        Decimal
+  status            String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED
+  
+  // Contact Info
+  fullName          String
+  email             String
+  phone             String
+  emergencyContact  String
+  dietaryNotes      String?
+  medicalNotes      String?
+  
+  createdAt         DateTime @default(now())
+}

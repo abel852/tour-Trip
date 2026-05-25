@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FaMountain } from 'react-icons/fa';
 import './Hero.css';
 
-const Hero = () => {
+const Hero: React.FC = () => {
   
   const images = [
     "https://i.pinimg.com/736x/de/ed/f8/deedf8bfdda2c1c238836f265e963ed3.jpg", 
@@ -47,7 +48,7 @@ const Hero = () => {
           </p>
 
           <div className="hero-btns animate-slide-up">
-            <button className="btn-main">View Expeditions</button>
+            <Link to="/tours" className="btn-main">View Expeditions</Link>
             <button className="btn-outline">Learn More</button>
           </div>
         </div>
